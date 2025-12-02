@@ -247,14 +247,13 @@ with tab1:
             # 초기 Zoom 레벨을 7로 설정 (더 확대된 상태로 시작)
             zoom=7, 
             center={"lat": 36.5, "lon": 127.5},
-            # 지도 스타일 변경 (더 자세한 배경)
-            mapbox_style="open-street-map"
+            # 지도 스타일 변경 (오류 방지를 위해 기본 스타일로 변경)
+            mapbox_style="carto-positron" 
         )
         
         # 지도 레이아웃 조정
         fig_map.update_layout(
-            # Plotly의 툴바를 통해 확대/축소 기능 제공됨
-            mapbox_accesstoken=st.secrets.get("mapbox_token", ""),
+            # 🛑 오류 방지: mapbox_accesstoken 관련 라인을 제거하거나 비활성화합니다.
             margin={"r":0,"t":0,"l":0,"b":0}, 
             height=550, 
             # 범례 위치 조정
