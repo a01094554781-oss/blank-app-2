@@ -30,7 +30,7 @@ UI_TEXT = {
         'tab1': "📊 지도 & 차트 분석",
         'tab2': "📋 상세 리스트 (카드 보기)",
         'tab3': "🌸 계절별 추천",
-        'chart_map': "🗺️ 축제 위치 지도 (규모 및 유형 분포)", # 제목 수정
+        'chart_map': "🗺️ 축제 위치 지도 (규모 및 유형 분포)",
         'chart_treemap': "지역별 & 유형별 분포",
         'chart_sunburst': "🎯 유형별 지역 분포 (Sunburst Chart)",
         'chart_top10': "🏆 외국인 방문객 Top 10",
@@ -59,7 +59,7 @@ UI_TEXT = {
         'tab1': "📊 Map & Charts",
         'tab2': "📋 Detailed List (Card View)",
         'tab3': "🌸 Seasonal Picks",
-        'chart_map': "🗺️ Festival Map Location (Scale & Type Distribution)", # 제목 수정
+        'chart_map': "🗺️ Festival Map Location (Scale & Type Distribution)",
         'chart_treemap': "Distribution by Region & Type",
         'chart_sunburst': "🎯 Distribution by Type & Region (Sunburst)",
         'chart_top10': "🏆 Top 10 Popular for Foreigners",
@@ -220,7 +220,7 @@ tab1, tab2, tab3 = st.tabs([txt['tab1'], txt['tab2'], txt['tab3']])
 with tab1:
     st.subheader(txt['chart_map'])
     if not filtered_df.empty:
-        # **지도 시각화 개선 (방문객 규모와 유형 강조)**
+        # **지도 시각화 개선 (방문객 규모, 유형 강조 및 초기 확대/축소 가능)**
         fig_map = px.scatter_mapbox(
             filtered_df, 
             lat="lat", 
@@ -244,14 +244,17 @@ with tab1:
             # 화려한 색상 팔레트 사용
             color_discrete_sequence=px.colors.qualitative.Vivid, 
             
-            # 초기 지도 설정 및 스타일 변경 (더 눈에 띄게)
-            zoom=6, 
+            # 초기 Zoom 레벨을 7로 설정 (더 확대된 상태로 시작)
+            zoom=7, 
             center={"lat": 36.5, "lon": 127.5},
-            mapbox_style="open-street-map" # 지도를 더 상세하게 보여주는 스타일
+            # 지도 스타일 변경 (더 자세한 배경)
+            mapbox_style="open-street-map"
         )
         
         # 지도 레이아웃 조정
         fig_map.update_layout(
+            # Plotly의 툴바를 통해 확대/축소 기능 제공됨
+            mapbox_accesstoken=st.secrets.get("mapbox_token", ""),
             margin={"r":0,"t":0,"l":0,"b":0}, 
             height=550, 
             # 범례 위치 조정
@@ -259,13 +262,14 @@ with tab1:
         )
         
         st.plotly_chart(fig_map, use_container_width=True)
+        st.caption("💡 Tip: 지도 오른쪽 상단의 툴바를 이용하거나 마우스 휠 스크롤을 이용해 확대/축소할 수 있습니다.")
     
     else:
         st.warning("No festivals found based on the current filters.")
     
     st.markdown("---")
 
-    # Treemap 및 Top 10 차트 (기존 유지)
+    # Treemap 및 Top 10 차트 
     col_chart1, col_chart2 = st.columns(2)
     with col_chart1:
         st.subheader(txt['chart_treemap'])
@@ -289,7 +293,7 @@ with tab1:
             fig_bar.update_layout(yaxis={'categoryorder':'total ascending'}, showlegend=False)
             st.plotly_chart(fig_bar, use_container_width=True)
 
-    # 썬버스트 차트 (기존 유지)
+    # 썬버스트 차트 
     st.markdown("---")
     st.subheader(txt['chart_sunburst'])
     if not filtered_df.empty:
@@ -347,7 +351,7 @@ with tab2:
     else:
         st.warning("No festivals found.")
 
-# --- TAB 3: 계절별 추천 (New) ---
+# --- TAB 3: 계절별 추천 ---
 with tab3:
     st.info(txt['season_msg'])
     
